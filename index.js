@@ -27,7 +27,7 @@ function ipandwebsite(ip, website){
     var queryString = "DELETE FROM ipandwebsite where ip = '" + ip + "';";
     baseClient.query(queryString); 
     queryString = "INSERT INTO ipandwebsite (ip, website) values ('" + 
-        ip + "', '" + website + "');";
+        ip + "', '" + JSON.stringify(website) + "');";
     baseClient.query(queryString);
 }
 
