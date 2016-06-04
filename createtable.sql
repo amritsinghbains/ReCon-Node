@@ -7,5 +7,5 @@ create table ipandwebsite (
 create table websiteandleakiness (
 	id SERIAL PRIMARY KEY,
 	website TEXT,	
-	leakiness TEXT
+	leakiness int
 );

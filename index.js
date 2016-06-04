@@ -33,7 +33,7 @@ function ipandwebsite(ip, website){
 
 function websiteandleakiness(website, leakiness){
     queryString = "INSERT INTO websiteandleakiness (website, leakiness) values ('" + 
-        website + "', '" + leakiness + "');";
+        website + "', " + leakiness + ");";
     baseClient.query(queryString);
 }
 
