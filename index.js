@@ -23,11 +23,11 @@ pg.connect(process.env.DATABASE_URL, function(err, client) {
     baseClient = client;
 });
 
-function ipandwebsite(ip, website){
+function ipandwebsite(ip, website, value){
     var queryString = "DELETE FROM ipandwebsite where ip = '" + ip + "';";
     baseClient.query(queryString); 
-    queryString = "INSERT INTO ipandwebsite (ip, website) values ('" + 
-        ip + "', '" + website + "');";
+    queryString = "INSERT INTO ipandwebsite (ip, website, value) values ('" + 
+        ip + "', '" + website + "', '" + value + "');";
     baseClient.query(queryString);
 }
 
@@ -38,9 +38,9 @@ function websiteandleakiness(website, leakiness){
 }
 
 app.post('/ipandwebsite', function (req, res) {    
-    if(req.body.ip != undefined && req.body.website != undefined){
-      ipandwebsite(req.body.ip, req.body.website);
-      res.send('IP: ' + req.body.ip + ' Website: ' + req.body.website);
+    if(req.body.ip != undefined && req.body.website != undefined && req.body.value != undefined){
+      ipandwebsite(req.body.ip,  req.body.website, req.body.value);
+      res.send('ipandwebsite: ' + req.body.ip);
     }else {
     	res.send('No Support yet');	
     }    
