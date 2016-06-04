@@ -4,6 +4,7 @@ var url = require('url');
 var bodyParser = require('body-parser');
 var app = express();
 var port = process.env.PORT || 5000
+var pg = require('pg');
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -17,22 +18,80 @@ app.all('*', function(req, res, next) {
 app.listen(port);
 console.log('Listening at ' + port);
 
-var data = [];
+var baseClient;
+pg.connect(process.env.DATABASE_URL, function(err, client) {
+    baseClient = client;
+});
 
-app.get('/set', function (req, res) {    
-    if(req.query.ip != undefined && req.query.value != undefined){
-      data[req.query.ip] = req.query.value;
-      console.log('SET: ' + req.query.ip)
-      res.send('IP: ' + req.query.ip + ' Value: ' + req.query.value);
+function ipandwebsite(ip, website){
+    var queryString = "DELETE FROM ipandwebsite where ip = '" + ip + "';";
+    baseClient.query(queryString); 
+    queryString = "INSERT INTO ipandwebsite (ip, website) values ('" + 
+        ip + "', '" + website + "');";
+    baseClient.query(queryString);
+}
+
+function websiteandleakiness(website, leakiness){
+    queryString = "INSERT INTO websiteandleakiness (website, leakiness) values ('" + 
+        website + "', '" + leakiness + "');";
+    baseClient.query(queryString);
+}
+
+app.get('/ipandwebsite', function (req, res) {    
+    if(req.query.ip != undefined && req.query.website != undefined){
+      ipandwebsite(req.query.ip, req.query.website);
+      res.send('IP: ' + req.query.ip + ' Website: ' + req.query.website);
     }else {
     	res.send('No Support yet');	
     }    
 });
 
-app.get('/get', function (req, res) {    
+app.get('/websiteandleakiness', function (req, res) {    
+    if(req.query.leakiness != undefined && req.query.website != undefined){
+      ipandwebsite(req.query.website, req.query.leakiness);
+      res.send('Website: ' + req.query.website + ' Leakiness: ' + req.query.leakiness);
+    }else {
+      res.send('No Support yet'); 
+    }    
+});
+
+app.get('/getwebsitefromip', function (req, res) {    
     if(req.query.ip != undefined){
-      console.log('GET: ' + req.query.ip)
-      res.send(data[req.query.ip]);
+
+    var queryString = "select * from ipandwebsite where ip = '" + req.query.ip + "' limit 1";
+    var query = baseClient.query(queryString);
+    var rows = [];
+    query.on('row', function(row) {
+        rows.push(row);
+    });
+    query.on('end', function(result) {
+      if(rows.length > 0){
+          res.json(rows[0].website)
+      }else{
+        res.json('No such IP')
+      }
+    });
+    }else {
+      res.send('No Support yet'); 
+    }    
+});
+
+app.get('/getleakinessfromwebsite', function (req, res) {    
+    if(req.query.website != undefined){
+
+    var queryString = "select avg(leakiness) as leakiness from websiteandleakiness where website = '" + req.query.website + "' ";
+    var query = baseClient.query(queryString);
+    var rows = [];
+    query.on('row', function(row) {
+        rows.push(row);
+    });
+    query.on('end', function(result) {
+      if(rows.length > 0){
+          res.json(rows[0].leakiness)
+      }else{
+        res.json('No such website')
+      }
+    });
     }else {
       res.send('No Support yet'); 
     }    
