@@ -27,7 +27,7 @@ function ipandwebsite(ip, website){
     var queryString = "DELETE FROM ipandwebsite where ip = '" + ip + "';";
     baseClient.query(queryString); 
     queryString = "INSERT INTO ipandwebsite (ip, website) values ('" + 
-        ip + "', '" + JSON.stringify(website) + "');";
+        ip + "', '" + website + "');";
     baseClient.query(queryString);
 }
 
@@ -37,19 +37,19 @@ function websiteandleakiness(website, leakiness){
     baseClient.query(queryString);
 }
 
-app.get('/ipandwebsite', function (req, res) {    
-    if(req.query.ip != undefined && req.query.website != undefined){
-      ipandwebsite(req.query.ip, req.query.website);
-      res.send('IP: ' + req.query.ip + ' Website: ' + req.query.website);
+app.post('/ipandwebsite', function (req, res) {    
+    if(req.body.ip != undefined && req.body.website != undefined){
+      ipandwebsite(req.body.ip, req.body.website);
+      res.send('IP: ' + req.body.ip + ' Website: ' + req.body.website);
     }else {
     	res.send('No Support yet');	
     }    
 });
 
-app.get('/websiteandleakiness', function (req, res) {    
-    if(req.query.leakiness != undefined && req.query.website != undefined){
-      ipandwebsite(req.query.website, req.query.leakiness);
-      res.send('Website: ' + req.query.website + ' Leakiness: ' + req.query.leakiness);
+app.post('/websiteandleakiness', function (req, res) {    
+    if(req.body.leakiness != undefined && req.body.website != undefined){
+      ipandwebsite(req.body.website, req.body.leakiness);
+      res.send('Website: ' + req.body.website + ' Leakiness: ' + req.body.leakiness);
     }else {
       res.send('No Support yet'); 
     }    
