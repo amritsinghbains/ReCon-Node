@@ -66,7 +66,7 @@ app.get('/getwebsitefromip', function (req, res) {
     });
     query.on('end', function(result) {
       if(rows.length > 0){
-          res.json(rows[0].website)
+          res.json(rows[0].value)
       }else{
         res.json('No such IP')
       }
