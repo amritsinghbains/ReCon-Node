@@ -40,6 +40,7 @@ function websiteandleakiness(website, leakiness){
 app.post('/ipandwebsite', function (req, res) {    
     if(req.body.ip != undefined && req.body.website != undefined && req.body.value != undefined){
       ipandwebsite(req.body.ip,  req.body.website, req.body.value);
+      console.log('Website: ' + req.body.website + ' ip: ' + req.body.ip);
       res.send('ipandwebsite: ' + req.body.ip);
     }else {
     	res.send('No Support yet');	
