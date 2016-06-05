@@ -50,7 +50,7 @@ app.post('/ipandwebsite', function (req, res) {
 app.post('/websiteandleakiness', function (req, res) {    
     console.log('Website: ' + req.body.website + ' Leakiness: ' + req.body.leakiness);
     if(req.body.leakiness != undefined && req.body.website != undefined){
-      ipandwebsite(req.body.website, req.body.leakiness);
+      websiteandleakiness(req.body.website, req.body.leakiness);
       res.send('Website: ' + req.body.website + ' Leakiness: ' + req.body.leakiness);
     }else {
       res.send('No Support yet'); 
